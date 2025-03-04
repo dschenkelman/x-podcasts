@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { Copy } from "lucide-react";
 
 export default function PromptGenerator() {
   const [intro, setIntro] = useState("");
@@ -78,10 +79,18 @@ export default function PromptGenerator() {
 
       {showPrompt && (
         <div className="mt-6 space-y-2">
-          <div className="bg-gray-100 p-3 rounded max-h-60 overflow-y-auto">
+          <div className="bg-gray-100 p-3 rounded max-h-60 overflow-y-auto relative">
             <pre className="whitespace-pre-wrap text-sm">{fullPrompt}</pre>
+            <Button 
+              onClick={copyToClipboard} 
+              size="icon" 
+              variant="ghost" 
+              className="absolute top-2 right-2 h-8 w-8"
+              title="Copy to clipboard"
+            >
+              <Copy className="h-4 w-4" />
+            </Button>
           </div>
-          <Button onClick={copyToClipboard}>Copy to Clipboard</Button>
         </div>
       )}
     </div>

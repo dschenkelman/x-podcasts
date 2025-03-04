@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { processTweets } from "@/lib/tweet-utils";
+import { Download } from "lucide-react";
 
 interface TweetProcessorProps {
   onProcessed: (fileContent: string) => void;
@@ -96,11 +97,23 @@ export default function TweetProcessor({ onProcessed }: TweetProcessorProps) {
       )}
 
       {outputContent && (
-        <div className="space-y-2">
-          <div className="bg-gray-100 p-3 rounded max-h-40 overflow-y-auto">
+        <div className="border border-gray-300 rounded overflow-hidden">
+          <div className="flex items-center justify-between bg-gray-200 p-2">
+            <div className="font-medium text-sm">posts.txt</div>
+            <Button 
+              onClick={downloadFile} 
+              size="sm" 
+              variant="ghost" 
+              className="h-8 flex items-center gap-1"
+              title="Download posts.txt"
+            >
+              <Download className="h-4 w-4" />
+              <span>Download</span>
+            </Button>
+          </div>
+          <div className="bg-gray-100 p-3 max-h-40 overflow-y-auto">
             <pre className="text-xs">{outputContent.substring(0, 200)}...</pre>
           </div>
-          <Button onClick={downloadFile}>Download posts.txt</Button>
         </div>
       )}
     </div>
