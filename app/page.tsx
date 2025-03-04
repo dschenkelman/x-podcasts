@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import TweetProcessor from "@/components/tweet-processor";
 import PromptGenerator from "@/components/prompt-generator";
@@ -10,10 +10,26 @@ export default function Home() {
   const [processedFile, setProcessedFile] = useState<string | null>(null);
   const [generatedPrompt, setGeneratedPrompt] = useState<string | null>(null);
   const [promptGenerated, setPromptGenerated] = useState<boolean>(false);
+  
+  // Refs for scrolling
+  const step2Ref = useRef<HTMLDivElement>(null);
+  const step3Ref = useRef<HTMLDivElement>(null);
+
+  const handleFileProcessed = (fileContent: string) => {
+    setProcessedFile(fileContent);
+    // Add small delay to ensure DOM updates before scrolling
+    setTimeout(() => {
+      step2Ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  };
 
   const handlePromptGenerated = (promptText: string) => {
     setGeneratedPrompt(promptText);
     setPromptGenerated(true);
+    // Add small delay to ensure DOM updates before scrolling
+    setTimeout(() => {
+      step3Ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
   };
 
   return (
@@ -27,12 +43,12 @@ export default function Home() {
             <CardDescription>Upload your X archive file to extract and format your posts</CardDescription>
           </CardHeader>
           <CardContent>
-            <TweetProcessor onProcessed={setProcessedFile} />
+            <TweetProcessor onProcessed={handleFileProcessed} />
           </CardContent>
         </Card>
 
         {processedFile && (
-          <Card>
+          <Card ref={step2Ref}>
             <CardHeader>
               <CardTitle>Step 2: Create Your Podcast Prompt</CardTitle>
               <CardDescription>Customize how your podcast should sound and what topic to focus on</CardDescription>
@@ -43,7 +59,11 @@ export default function Home() {
           </Card>
         )}
 
-        {promptGenerated && <NotebookInstructions processedFile={processedFile} promptText={generatedPrompt} />}
+        {promptGenerated && (
+          <div ref={step3Ref}>
+            <NotebookInstructions processedFile={processedFile} promptText={generatedPrompt} />
+          </div>
+        )}
       </div>
     </main>
   );
