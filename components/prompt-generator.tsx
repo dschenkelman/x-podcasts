@@ -4,14 +4,15 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Copy } from "lucide-react";
 
-export default function PromptGenerator() {
+interface PromptGeneratorProps {
+  onGenerated?: (promptText: string) => void;
+}
+
+export default function PromptGenerator({ onGenerated }: PromptGeneratorProps) {
   const [intro, setIntro] = useState("");
   const [topic, setTopic] = useState("");
   const [charCount, setCharCount] = useState(0);
-  const [fullPrompt, setFullPrompt] = useState("");
-  const [showPrompt, setShowPrompt] = useState(false);
 
   const MAX_CHARS = 500;
 
@@ -36,15 +37,9 @@ export default function PromptGenerator() {
 
     const prompt = `${intro} I am sharing my X/twitter feed.\nThe topic we are discussing in today's episode is: ${topic}\n\nDiscuss top posts only related to this topic, not as an interview, but as a discussion. Don't mention the post content as a post, just discuss the topic.\n\nKeep it short. Less than 10 minutes`;
     
-    setFullPrompt(prompt);
-    setShowPrompt(true);
-  };
-
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(fullPrompt);
-    toast.success("Copied to clipboard", {
-      description: "The prompt has been copied to your clipboard.",
-    });
+    if (onGenerated) {
+      onGenerated(prompt);
+    }
   };
 
   return (
@@ -76,23 +71,6 @@ export default function PromptGenerator() {
       <Button onClick={generatePrompt} disabled={!intro || !topic || charCount > MAX_CHARS}>
         Generate Prompt
       </Button>
-
-      {showPrompt && (
-        <div className="mt-6 space-y-2">
-          <div className="bg-gray-100 p-3 rounded max-h-60 overflow-y-auto relative">
-            <pre className="whitespace-pre-wrap text-sm">{fullPrompt}</pre>
-            <Button 
-              onClick={copyToClipboard} 
-              size="icon" 
-              variant="ghost" 
-              className="absolute top-2 right-2 h-8 w-8"
-              title="Copy to clipboard"
-            >
-              <Copy className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      )}
     </div>
   );
 } 
