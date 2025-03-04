@@ -33,7 +33,7 @@ export default function PromptGenerator() {
       return;
     }
 
-    const prompt = `${intro}\n\nThe topic we are discussing in today's episode is: ${topic}\n\nDiscuss top posts only related to this topic, not as an interview, but as a discussion. Don't mention the post content as a post, just discuss the topic.\n\nKeep it short. Less than 10 minutes`;
+    const prompt = `${intro} I am sharing my X/twitter feed.\nThe topic we are discussing in today's episode is: ${topic}\n\nDiscuss top posts only related to this topic, not as an interview, but as a discussion. Don't mention the post content as a post, just discuss the topic.\n\nKeep it short. Less than 10 minutes`;
     
     setFullPrompt(prompt);
     setShowPrompt(true);
@@ -51,7 +51,7 @@ export default function PromptGenerator() {
       <div>
         <label className="block text-sm font-medium mb-1">Introduction</label>
         <Textarea
-          placeholder="Introduce yourself and the podcast..."
+          placeholder="I am Damian Schenkelman, an early engineer at Auth0, currently vp r&d at Okta"
           value={intro}
           onChange={(e) => setIntro(e.target.value)}
           className="h-24"
@@ -61,7 +61,7 @@ export default function PromptGenerator() {
       <div>
         <label className="block text-sm font-medium mb-1">Topic</label>
         <Textarea
-          placeholder="What's the topic of this episode?"
+          placeholder="The rise of AI and implocations for developers"
           value={topic}
           onChange={(e) => setTopic(e.target.value)}
           className="h-24"
