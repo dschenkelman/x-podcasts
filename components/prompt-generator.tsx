@@ -4,20 +4,18 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { getTemplateLength } from "@/utils/prompt";
 
 interface PromptGeneratorProps {
-  onGenerated?: () => void;
+  onGenerated: (intro: string, topic: string) => void;
 }
 
 export default function PromptGenerator({ onGenerated }: PromptGeneratorProps) {
   const [intro, setIntro] = useState("");
   const [topic, setTopic] = useState("");
   const [remainingChars, setRemainingChars] = useState(500);
-  const [fullPrompt, setFullPrompt] = useState("");
-  const [showPrompt, setShowPrompt] = useState(false);
 
-  const prompt = `${intro} I am sharing my X/twitter feed.\nThe topic we are discussing in today's episode is: ${topic}\n\nDiscuss top posts only related to this topic, not as an interview, but as a discussion. Don't mention the post content as a post, just discuss the topic.\n\nKeep it short. Less than 10 minutes`;
-  const MAX_CHARS = 500 - prompt.length;
+  const MAX_CHARS = 500 - getTemplateLength();
 
   useEffect(() => {
     const usedChars = intro.length + topic.length;
@@ -38,15 +36,8 @@ export default function PromptGenerator({ onGenerated }: PromptGeneratorProps) {
       });
       return;
     }
-
     
-    
-    setFullPrompt(prompt);
-    setShowPrompt(true);
-    
-    if (onGenerated) {
-      onGenerated();
-    }
+    onGenerated(intro, topic);
   };
 
   return (
@@ -78,15 +69,6 @@ export default function PromptGenerator({ onGenerated }: PromptGeneratorProps) {
       <Button onClick={generatePrompt} disabled={!intro || !topic || remainingChars < 0}>
         Generate Prompt
       </Button>
-
-      {showPrompt && (
-        <div className="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-md">
-          <h3 className="text-sm font-medium mb-2">Generated Prompt:</h3>
-          <div className="bg-white p-3 rounded border border-gray-300">
-            <pre className="whitespace-pre-wrap text-sm">{fullPrompt}</pre>
-          </div>
-        </div>
-      )}
     </div>
   );
 } 

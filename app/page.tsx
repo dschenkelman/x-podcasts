@@ -8,7 +8,8 @@ import NotebookInstructions from "@/components/notebook-instructions";
 
 export default function Home() {
   const [processedFile, setProcessedFile] = useState<string | null>(null);
-  const [generatedPrompt, setGeneratedPrompt] = useState<string | null>(null);
+  const [intro, setIntro] = useState<string | null>(null);
+  const [topic, setTopic] = useState<string | null>(null);
   const [promptGenerated, setPromptGenerated] = useState<boolean>(false);
   
   // Refs for scrolling
@@ -23,8 +24,9 @@ export default function Home() {
     }, 100);
   };
 
-  const handlePromptGenerated = (promptText: string) => {
-    setGeneratedPrompt(promptText);
+  const handlePromptGenerated = (newIntro: string, newTopic: string) => {
+    setIntro(newIntro);
+    setTopic(newTopic);
     setPromptGenerated(true);
     // Add small delay to ensure DOM updates before scrolling
     setTimeout(() => {
@@ -61,7 +63,11 @@ export default function Home() {
 
         {promptGenerated && (
           <div ref={step3Ref}>
-            <NotebookInstructions processedFile={processedFile} promptText={generatedPrompt} />
+            <NotebookInstructions 
+              processedFile={processedFile} 
+              intro={intro}
+              topic={topic}
+            />
           </div>
         )}
       </div>

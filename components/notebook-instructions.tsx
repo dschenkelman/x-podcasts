@@ -6,13 +6,18 @@ import { Download, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import Image from "next/image";
+import { generatePrompt } from "@/utils/prompt";
 
 interface NotebookInstructionsProps {
   processedFile: string | null;
   promptText?: string | null;
+  intro?: string;
+  topic?: string;
 }
 
-export default function NotebookInstructions({ processedFile, promptText }: NotebookInstructionsProps) {
+export default function NotebookInstructions({ processedFile, intro, topic }: NotebookInstructionsProps) {
+  const finalPrompt = intro && topic ? generatePrompt(intro, topic) : null;
+
   const downloadFile = () => {
     if (!processedFile) return;
     
@@ -27,13 +32,19 @@ export default function NotebookInstructions({ processedFile, promptText }: Note
     URL.revokeObjectURL(url);
   };
 
-  const copyToClipboard = () => {
-    if (!promptText) return;
+  const copyToClipboard = async () => {
+    if (!finalPrompt) return;
     
-    navigator.clipboard.writeText(promptText);
-    toast.success("Copied to clipboard", {
-      description: "The prompt has been copied to your clipboard.",
-    });
+    try {
+      await navigator.clipboard.writeText(finalPrompt);
+      toast.success("Copied to clipboard", {
+        description: "The prompt has been copied to your clipboard.",
+      });
+    } catch (error) {
+      toast.error("Failed to copy", {
+        description: "Please try copying manually.",
+      });
+    }
   };
 
   return (
@@ -89,7 +100,7 @@ export default function NotebookInstructions({ processedFile, promptText }: Note
             </li>
             <li>
               <strong>Copy and paste your generated prompt</strong>
-              {promptText && (
+              {finalPrompt && (
                 <div className="mt-2 border border-gray-300 rounded overflow-hidden">
                   <div className="flex items-center justify-between bg-gray-200 p-2">
                     <div className="font-medium text-sm">Generated Prompt</div>
@@ -105,7 +116,7 @@ export default function NotebookInstructions({ processedFile, promptText }: Note
                     </Button>
                   </div>
                   <div className="bg-gray-100 p-3 max-h-40 overflow-y-auto">
-                    <pre className="whitespace-pre-wrap text-xs">{promptText}</pre>
+                    <pre className="whitespace-pre-wrap text-xs">{finalPrompt}</pre>
                   </div>
                 </div>
               )}
